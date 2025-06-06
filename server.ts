@@ -3,10 +3,12 @@ import { processJourney } from './services/journey';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
-const filePath: string = 'uploads/nemu-teste.xlsx';
 
 app.use(express.json());
-processJourney(filePath);
+app.get('/', (req, res) => {
+    res.send('Hello World');
+});
+app.get('/journeys', processJourney);
 
 app.listen(PORT, () => {
     console.log(` Server running on http://localhost:${PORT}`);
