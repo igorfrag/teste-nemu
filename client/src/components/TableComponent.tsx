@@ -11,9 +11,19 @@ interface Item {
 
 const TableComponent: React.FC<{ data: Array<Item> }> = ({ data }) => {
     return (
-        <table>
-            <thead>
-                <tr>
+        <table style={{ border: 'solid 1px white', borderRadius: '10px' }}>
+            <thead
+                style={{
+                    backgroundColor: 'gray',
+                    border: 'solid 1px white',
+                }}
+            >
+                <tr
+                    style={{
+                        backgroundColor: 'gray',
+                        border: 'solid 1px white',
+                    }}
+                >
                     <th>Id</th>
                     <th>Jornada</th>
                     <th>Touch Points</th>
@@ -22,32 +32,52 @@ const TableComponent: React.FC<{ data: Array<Item> }> = ({ data }) => {
             <tbody>
                 {data.map((item, index) => (
                     <tr key={index}>
-                        <td>{item.id}</td>
+                        <td style={{ borderBottom: 'solid 1px white' }}>
+                            {item.id}
+                        </td>
                         <td
                             style={{
+                                borderBottom: 'solid 1px white',
                                 padding: '30px',
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                alignItems: 'center',
+                                gap: '3px',
                             }}
                         >
                             {item.jornada.map((touchpoint, index) => (
-                                <span
-                                    key={index}
-                                    style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: '4px',
-                                        flexWrap: 'wrap',
-                                    }}
-                                >
-                                    <SourceButton
-                                        text={touchpoint.utm_source}
-                                    ></SourceButton>
-                                    {index < item.jornada.length - 1
-                                        ? ' > '
-                                        : ''}
-                                </span>
+                                <>
+                                    <span
+                                        key={index}
+                                        style={{
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            flexWrap: 'wrap',
+                                        }}
+                                    >
+                                        <SourceButton
+                                            text={touchpoint.utm_source}
+                                        />
+                                    </span>
+                                    {index < item.jornada.length - 1 ? (
+                                        <span
+                                            style={{
+                                                fontWeight: 'bold',
+                                                color: 'darkgray',
+                                            }}
+                                        >
+                                            {'➤'}
+                                        </span>
+                                    ) : (
+                                        ''
+                                    )}
+                                </>
                             ))}
                         </td>
-                        <td>{item.jornada.length}</td>
+                        <td style={{ borderBottom: 'solid 1px white' }}>
+                            {item.jornada.length}
+                        </td>
                     </tr>
                 ))}
             </tbody>
