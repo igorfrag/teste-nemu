@@ -51,13 +51,13 @@ export const processJourney = async (req: Request, res: Response) => {
                 );
                 // Se a jornada tiver apenas 2 touch points ou repetir o primeiro e ultimo touch points, podemos retorna-la, aplicando a terceira regra do briefing
                 if (orderedJourney.length <= 2) {
-                    return { sessionId, jornada: orderedJourney };
+                    return { id: sessionId, jornada: orderedJourney };
                 }
                 // Agora trataremos a jornada com mais de 2 touch points, optei por utilizar um Set
                 // Dessa forma podemos descartar eventos repetidos, respeitando a quarta regra do briefing
                 const firstTouch = orderedJourney[0];
                 const lastTouch = orderedJourney[orderedJourney.length - 1];
-                const journeyMiddle = [];
+                const journeyMiddle: Array<sheetCols> = [];
                 const journeySet = new Set();
                 // Iteramos sobre a jornada ordenada e consultamos o utm_source da planilha
                 // Caso nao exista no Set adcionamos para evitar repeticoes, ao mesmo tempo, adcionamos ao array do "meio da jornada"
@@ -68,6 +68,21 @@ export const processJourney = async (req: Request, res: Response) => {
                         journeyMiddle.push(orderedJourney[i]);
                     }
                 }
+                // Limpa o meio da jornada caso o inicio/fim tenha o mesmo source do primeiro/ultimo touchpoints
+                if (
+                    journeyMiddle.length > 0 &&
+                    firstTouch.utm_source === journeyMiddle[0].utm_source
+                ) {
+                    journeyMiddle.shift();
+                }
+                if (
+                    journeyMiddle.length > 0 &&
+                    lastTouch.utm_source ===
+                        journeyMiddle[journeyMiddle.length - 1].utm_source
+                ) {
+                    journeyMiddle.pop();
+                }
+
                 return {
                     id: sessionId,
                     jornada: [firstTouch, ...journeyMiddle, lastTouch],
