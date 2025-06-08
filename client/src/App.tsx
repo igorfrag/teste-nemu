@@ -4,9 +4,11 @@ import TableComponent from './components/TableComponent';
 
 function App() {
     const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchJourneys = async () => {
+            setIsLoading(true);
             try {
                 const response = await fetch('http://localhost:3000/journeys');
                 if (!response.ok) {
@@ -14,6 +16,7 @@ function App() {
                 }
                 const json = await response.json();
                 setData(json);
+                setIsLoading(false);
             } catch (err) {
                 console.log(err);
             }
@@ -25,7 +28,11 @@ function App() {
     return (
         <>
             <h1>Jornadas Nemu</h1>
-            <TableComponent data={data} />
+            {isLoading ? (
+                <h2>Carregando ...</h2>
+            ) : (
+                <TableComponent data={data} />
+            )}
         </>
     );
 }
